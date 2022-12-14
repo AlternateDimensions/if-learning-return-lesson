@@ -17,7 +17,7 @@ public class Label extends JLabel {
     //Constructor
     Label(){
         // Image Properties
-        ImageIcon image = new ImageIcon("VS Code.png");
+        ImageIcon image = new ImageIcon("Images/VS Code.png");
         Border border = BorderFactory.createLineBorder(Color.BLUE, 3);
 
         // Label Properties

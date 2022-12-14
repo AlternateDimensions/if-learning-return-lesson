@@ -14,7 +14,7 @@ public class Frame extends JFrame{
         this.setTitle("Frank's Funny Frame");
 
         // ImageIcon
-        ImageIcon image = new ImageIcon("jagodzinski_4k.png");
+        ImageIcon image = new ImageIcon("Images/jagodzinski_4k.png");
         this.setIconImage(image.getImage());
         this.getContentPane().setBackground(new Color(115, 138, 219));
 
@@ -26,7 +26,7 @@ public class Frame extends JFrame{
     }
 
     // Custom Constructor
-    Frame(String frameTitle, int closeBehavior, boolean resizable, int width, int height, boolean visible, String faviconFile, int bgRed, int bgGreen, int bgBlue, int bgAlpha){
+    Frame(String frameTitle, int closeBehavior, boolean resizable, int width, int height, boolean visible, String faviconFile, int bgRed, int bgGreen, int bgBlue, int bgAlpha, boolean frameManager, boolean decorators){
         this.setTitle(frameTitle);
 
         // ImageIcon
@@ -36,10 +36,11 @@ public class Frame extends JFrame{
 
         this.setDefaultCloseOperation(options[closeBehavior]);
         this.setResizable(resizable);
+        if (!frameManager){
+            this.setLayout(null);
+        }
+        this.setUndecorated(decorators);
         this.setSize(width, height);
         this.setVisible(visible);
-
     }
-
-
 }
