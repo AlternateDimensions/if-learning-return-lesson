@@ -1,4 +1,4 @@
-# if-learning-return-lesson
+# if (learning) {return lesson;}
 Final project for APCS Semester 1. Teaches conditional statements and iteration.
 
 ## Why...
