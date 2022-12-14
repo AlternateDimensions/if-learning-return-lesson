@@ -1,0 +1,11 @@
+# if-learning-return-lesson
+Final project for APCS Semester 1. Teaches conditional statements and iteration.
+
+## Why...
+Ask Mr. J, not me.
+
+## ...are you using Java for GUIs?
+This entire class is me suffering :)
+
+## Will you actually get it done before it's due?
+HAH! No.
