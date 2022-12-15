@@ -7,12 +7,6 @@ import java.awt.Font;
 
 
 public class Label extends JLabel {
-    private int[] options = {
-        JLabel.LEFT,
-        JLabel.CENTER,
-        JLabel.RIGHT,
-    };
-
 
     //Constructor
     Label(){
@@ -33,26 +27,33 @@ public class Label extends JLabel {
         this.setOpaque(true);
         this.setVerticalAlignment(JLabel.CENTER);
         this.setHorizontalAlignment(JLabel.CENTER);
+        this.setVisible(true);
     }
 
-    Label(String iconImage, int[] borderRGB, int borderThickness, String text, int textPotH, int textPotV, int[] foregroundRGB, String[] font, int iconTextGap, int[] backgroundRGB, int alignV, int alignH ){
+    Label(boolean icon, boolean border, String iconImage, int[] borderRGB, int borderThickness, String text, int textPotH, int textPotV, int[] foregroundRGB, String[] fontInfo, int iconTextGap, int[] backgroundRGB,boolean opaque,  int alignV, int alignH){
         // Image Properties
-        ImageIcon image = new ImageIcon(iconImage);
-        Border border = BorderFactory.createLineBorder(new Color(borderRGB[0], borderRGB[1], borderRGB[2]), borderThickness);
+        if (icon) {
+            ImageIcon image = new ImageIcon(iconImage);
+            this.setIcon(image);
+            this.setIconTextGap(iconTextGap);
+        }
+
+        if (border){
+            Border borderObj = BorderFactory.createLineBorder(new Color(borderRGB[0], borderRGB[1], borderRGB[2]), borderThickness);
+            this.setBorder(borderObj);
+        }
 
         // Label Properties
         this.setText(text);
-        this.setIcon(image);
         this.setHorizontalTextPosition(textPotH);
         this.setVerticalTextPosition(textPotV);
-        this.setForeground(new Color(foregroundRGB[0], foregroundRGB[1], foregroundRGB[2]));
-        this.setFont(new Font(font[0], Integer.parseInt(font[1]), Integer.parseInt(font[2])));
-        this.setIconTextGap(iconTextGap);
-        this.setBackground(Color.DARK_GRAY);
-        this.setBorder(border);
-        this.setOpaque(true);
-        this.setVerticalAlignment(options[alignV]);
-        this.setHorizontalAlignment(options[alignH]);
+        this.setForeground(new Color(foregroundRGB[0], foregroundRGB[1], foregroundRGB[2], foregroundRGB[3]));
+        this.setFont(new Font(fontInfo[0], Font.PLAIN, Integer.parseInt(fontInfo[1])));
+        this.setBackground(new Color(backgroundRGB[0], backgroundRGB[1], backgroundRGB[2], backgroundRGB[3]));
+        this.setOpaque(opaque);
+        this.setVerticalAlignment(JLabel.TOP);
+        this.setHorizontalAlignment(JLabel.CENTER);
+        this.setVisible(true);
     }
     
 }

@@ -23,5 +23,6 @@ public class GradientPanel extends JPanel{
     
     public GradientPanel(){
         this.setBounds(0,0,1920, 1080);
+        this.setVisible(true);
     }
 }

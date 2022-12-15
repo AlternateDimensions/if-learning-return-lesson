@@ -2,45 +2,20 @@ import javax.swing.JFrame;
 import java.awt.Color;
 import javax.swing.ImageIcon;
 
-public class Frame extends JFrame{
-    private int[] options = {
-        JFrame.DO_NOTHING_ON_CLOSE, 
-        JFrame.HIDE_ON_CLOSE,
-        JFrame.DISPOSE_ON_CLOSE, 
-    };
-    
+public class Frame extends JFrame{    
     // Default Constructor
     Frame(){
-        this.setTitle("Frank's Funny Frame");
+        this.setTitle("if (learning) {return lesson;}");
 
         // ImageIcon
-        ImageIcon image = new ImageIcon("Images/jagodzinski_4k.png");
+        ImageIcon image = new ImageIcon("Images/favicon.png");
         this.setIconImage(image.getImage());
-        this.getContentPane().setBackground(new Color(115, 138, 219));
+        this.getContentPane().setBackground(new Color(0,0,0,0));
 
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        this.setResizable(true);
-        this.setSize(420, 420);
+        this.setResizable(false);
+        this.setSize(1920, 1080);
         this.setVisible(true);
 
-    }
-
-    // Custom Constructor
-    Frame(String frameTitle, int closeBehavior, boolean resizable, int width, int height, boolean visible, String faviconFile, int bgRed, int bgGreen, int bgBlue, int bgAlpha, boolean frameManager, boolean decorators){
-        this.setTitle(frameTitle);
-
-        // ImageIcon
-        ImageIcon image = new ImageIcon(faviconFile);
-        this.setIconImage(image.getImage());
-        this.getContentPane().setBackground(new Color(bgRed, bgGreen, bgBlue, bgAlpha));
-
-        this.setDefaultCloseOperation(options[closeBehavior]);
-        this.setResizable(resizable);
-        if (!frameManager){
-            this.setLayout(null);
-        }
-        this.setUndecorated(decorators);
-        this.setSize(width, height);
-        this.setVisible(visible);
     }
 }
