@@ -2,7 +2,7 @@ FROM gitpod/workspace-full-vnc
 RUN sudo apt-get update && \
     sudo apt-get install -y libgtk-3-dev font-manager
 RUN mkdir ~/.fonts
-RUN mkdir ~/
+RUN mkdir ~/Downloads
 RUN mkdir ~/Downloads/JetBrainsMono
 RUN wget https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip
 RUN unzip ~/JetBrainsMono-2.242.zip -d ~/Downloads/JetBrainsMono
