@@ -8,5 +8,5 @@ RUN wget https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip
 RUN unzip ~/JetBrainsMono-2.242.zip -d ~/Downloads/JetBrainsMono
 RUN mv ~/Downloads/JetBrainsMono/fonts/variable/JetBrainsMono[wght].ttf ~/.fonts
 RUN rm ~/JetBrainsMono-2.242.zip
-RUN rm ~/Downloads/JetBrainsMono
+RUN rmdir ~/Downloads/JetBrainsMono/
 RUN sudo rm -rf /var/lib/apt/lists/*
