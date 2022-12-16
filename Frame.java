@@ -1,10 +1,15 @@
 import javax.swing.JFrame;
 import java.awt.Color;
 import javax.swing.ImageIcon;
+import javax.swing.JRootPane;
 
-public class Frame extends JFrame{    
+public class Frame extends JFrame{   
+ 
     // Default Constructor
     Frame(){
+        this.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+
+
         this.setTitle("if (learning) {return lesson;}");
 
         // ImageIcon
@@ -12,10 +17,14 @@ public class Frame extends JFrame{
         this.setIconImage(image.getImage());
         this.getContentPane().setBackground(new Color(0,0,0,0));
 
-        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.setResizable(false);
+        this.setUndecorated(true);
         this.setSize(1920, 1080);
-        this.setVisible(true);
+        this.setResizable(false);
+        this.setUndecorated(true);
+        this.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 
     }
+
+
 }

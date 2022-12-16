@@ -20,7 +20,7 @@ public class Label extends JLabel {
         this.setHorizontalTextPosition(JLabel.CENTER);
         this.setVerticalTextPosition(JLabel.TOP);
         this.setForeground(new Color(123, 255, 123));
-        this.setFont(new Font("JetBrains Mono", Font.PLAIN, 40));
+        this.setFont(new Font("JetBrains Mono", 1, 40));
         this.setIconTextGap(-10);
         this.setBackground(Color.DARK_GRAY);
         this.setBorder(border);
@@ -48,7 +48,7 @@ public class Label extends JLabel {
         this.setHorizontalTextPosition(textPotH);
         this.setVerticalTextPosition(textPotV);
         this.setForeground(new Color(foregroundRGB[0], foregroundRGB[1], foregroundRGB[2], foregroundRGB[3]));
-        this.setFont(new Font(fontInfo[0], Font.PLAIN, Integer.parseInt(fontInfo[1])));
+        this.setFont(new Font(fontInfo[0], Integer.parseInt(fontInfo[1]), Integer.parseInt(fontInfo[2])));
         this.setBackground(new Color(backgroundRGB[0], backgroundRGB[1], backgroundRGB[2], backgroundRGB[3]));
         this.setOpaque(opaque);
         this.setVerticalAlignment(JLabel.TOP);
