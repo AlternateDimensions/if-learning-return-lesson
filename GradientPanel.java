@@ -6,6 +6,8 @@ import java.awt.RenderingHints;
 import java.awt.Color;
 import java.awt.GradientPaint;
 
+import java.awt.Dimension;
+
 public class GradientPanel extends JPanel{
 
     @Override
@@ -22,7 +24,8 @@ public class GradientPanel extends JPanel{
     }
     
     public GradientPanel(){
-        this.setBounds(0,0,1920, 1080);
-        this.setVisible(true);
+        this.setLayout(null);
+        this.setBounds(0,0,1920,1080);
+        this.setPreferredSize(new Dimension(1920, 1080));
     }
 }

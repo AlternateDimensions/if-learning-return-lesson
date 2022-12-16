@@ -4,6 +4,7 @@ import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Dimension;
 
 
 public class Label extends JLabel {
@@ -30,14 +31,13 @@ public class Label extends JLabel {
         this.setVisible(true);
     }
 
-    Label(boolean icon, boolean border, String iconImage, int[] borderRGB, int borderThickness, String text, int textPotH, int textPotV, int[] foregroundRGB, String[] fontInfo, int iconTextGap, int[] backgroundRGB,boolean opaque,  int alignV, int alignH){
+    Label(boolean icon, boolean border, String iconImage, int[] borderRGB, int borderThickness, String text, int[] foregroundRGB, String[] fontInfo, int iconTextGap, int[] backgroundRGB, int[] sizeDim){
         // Image Properties
         if (icon) {
             ImageIcon image = new ImageIcon(iconImage);
             this.setIcon(image);
             this.setIconTextGap(iconTextGap);
         }
-
         if (border){
             Border borderObj = BorderFactory.createLineBorder(new Color(borderRGB[0], borderRGB[1], borderRGB[2]), borderThickness);
             this.setBorder(borderObj);
@@ -45,15 +45,17 @@ public class Label extends JLabel {
 
         // Label Properties
         this.setText(text);
-        this.setHorizontalTextPosition(textPotH);
-        this.setVerticalTextPosition(textPotV);
+        this.setHorizontalTextPosition(0);
         this.setForeground(new Color(foregroundRGB[0], foregroundRGB[1], foregroundRGB[2], foregroundRGB[3]));
         this.setFont(new Font(fontInfo[0], Integer.parseInt(fontInfo[1]), Integer.parseInt(fontInfo[2])));
         this.setBackground(new Color(backgroundRGB[0], backgroundRGB[1], backgroundRGB[2], backgroundRGB[3]));
-        this.setOpaque(opaque);
-        this.setVerticalAlignment(JLabel.TOP);
-        this.setHorizontalAlignment(JLabel.CENTER);
-        this.setVisible(true);
+
+        this.setBounds(sizeDim[0], sizeDim[1], sizeDim[2], sizeDim[3]);
+        this.setMinimumSize(new Dimension(sizeDim[2], sizeDim[3]));
+        this.setPreferredSize(new Dimension(sizeDim[2], sizeDim[3]));
+        this.setMaximumSize(new Dimension(sizeDim[2], sizeDim[3]));
+        
+        this.setAlignmentX(0);
     }
     
 }
