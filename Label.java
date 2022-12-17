@@ -32,7 +32,7 @@ public class Label extends JLabel {
         this.setVisible(true);
     }
 
-    Label(boolean icon, boolean border, String iconImage, int[] borderRGB, int borderThickness, String text, int[] foregroundRGB, String[] fontInfo, int iconTextGap, int[] backgroundRGB, int[] sizeDim){
+    Label(boolean icon, boolean border, String iconImage, int[] borderRGB, int borderThickness, String text, int[] foregroundRGB, String[] fontInfo, int iconTextGap, int[] sizeDim){
         // Image Properties
         if (icon) {
             ImageIcon image = new ImageIcon(iconImage);
@@ -46,10 +46,11 @@ public class Label extends JLabel {
 
         // Label Properties
         this.setText(text);
+        this.setOpaque(true);
         this.setHorizontalTextPosition(0);
         this.setForeground(new Color(foregroundRGB[0], foregroundRGB[1], foregroundRGB[2], foregroundRGB[3]));
         this.setFont(new Font(fontInfo[0], Integer.parseInt(fontInfo[1]), Integer.parseInt(fontInfo[2])));
-        this.setBackground(new Color(backgroundRGB[0], backgroundRGB[1], backgroundRGB[2], backgroundRGB[3]));
+        this.setBackground(new Color(0,0,0,0));
 
         this.setBounds(sizeDim[0], sizeDim[1], sizeDim[2], sizeDim[3]);
         this.setMinimumSize(new Dimension(sizeDim[2], sizeDim[3]));
