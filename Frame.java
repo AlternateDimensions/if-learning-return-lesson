@@ -18,15 +18,14 @@ public class Frame extends JFrame{
         ImageIcon image = new ImageIcon("Images/favicon.png");
         this.setIconImage(image.getImage());
         this.getContentPane().setBackground(new Color(0,0,0,0));
-
+        
+        // Frame properties
         this.setResizable(false);
         this.setUndecorated(true);
         this.setSize(1920, 1080);
         this.setResizable(false);
         this.setUndecorated(true);
         this.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
-
-
 }
