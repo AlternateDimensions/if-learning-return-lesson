@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Dimension;
 
+// Button extends JButton, allowing the creation of JButtons in use with other JComponenets
+
 public class Button extends JButton {
     public Button(String textString, int sizeDim, boolean isLeft){
         this.setText(textString);

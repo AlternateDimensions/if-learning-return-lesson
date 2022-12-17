@@ -9,3 +9,6 @@ This entire class is me suffering :)
 
 ## Will you actually get it done before it's due?
 HAH! No.
+
+## Friday, December 16
+Yeah it's still going terribly!

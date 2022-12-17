@@ -1,2 +1,3 @@
+# set the image to the Dockerfile. Gitpod handles building
 image:
   file: .gitpod.Dockerfile

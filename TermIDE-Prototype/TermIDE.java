@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 // Some code borrowed from Penkaj at https://www.digitalocean.com/community/tutorials/compile-run-java-program-another-java-program
 
+// TermIDE runs in the terminal. It acts like a lightweight and strict IDE that forces you to write line-by-line. It writes to a file, comoiles said file, and then returns back stdout and stderr.
+
 public class TermIDE {
 
     public static void main(String[] args) {
@@ -18,7 +20,7 @@ public class TermIDE {
                 System.out.println("\033[H\033[2JWelcome to the temporary code editor! Enter code line-by-line. Boilerplate code is already written for you. To save and compile, enter the closing bracket for the main method.\n\n");
                 
                 // Init Read/Writer
-                PrintWriter out = new PrintWriter("Code.java");
+                PrintWriter out = new PrintWriter("TermIDE-Prototype/Code.java");
                 ArrayList<String> codeLines = new ArrayList<String>();
                 
                 // Boilerplate Code
@@ -99,10 +101,10 @@ public class TermIDE {
                 out.write(String.join("\n", codeLines));                                                                                                                                                                                                                                                                                                                                                    
 
                 // Prepare results
-                System.out.println("\n*********$ java Code.java*********\n");
+                System.out.println("\n*********// $ java TermIDE-Prototype/Code.java //*********\n");
                 out.close();
-                runProcess("java Code.java");
-                System.out.print("\n\033[0m*********End Print*********\n\nEnter {Q} to Quit\n >> ");
+                runProcess("java TermIDE-Prototype/Code.java");
+                System.out.print("\n\033[0m*********// End Process //*********\n\nEnter {Q} to Quit\n >> ");
                 if (in.nextLine().equals("Q")) {
                     break;
                 }
@@ -114,6 +116,7 @@ public class TermIDE {
         
     }
 
+    // Takes the command and combines it into a printed statement
     private static void printLines(String cmd, InputStream ins) throws Exception {
         String line = null;
         BufferedReader in = new BufferedReader(
@@ -123,6 +126,7 @@ public class TermIDE {
         }
       }
 
+      // compiles and runs the file, then returns the stdout and stderr
       private static void runProcess(String command) throws Exception {
         Process pro = Runtime.getRuntime().exec(command);
         printLines("\033[32;1m|", pro.getInputStream());

@@ -3,6 +3,8 @@ import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JRootPane;
 
+// Frame extends JFrame, allowing the creation of a JFrame for a Java GUI
+
 public class Frame extends JFrame{   
  
     // Default Constructor

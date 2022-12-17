@@ -2,6 +2,8 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 
+// Panel extrends JPanel to allow a container to store JComponents, and then to be placed in other JPanels or a JFrame.
+
 public class Panel extends JPanel {
     public Panel(){
         this.setLayout(null);

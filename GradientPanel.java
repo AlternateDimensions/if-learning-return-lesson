@@ -8,6 +8,8 @@ import java.awt.GradientPaint;
 
 import java.awt.Dimension;
 
+// GradientPanel extends JPanel and incoporates Graphics to make a gradient background for a JFrame
+
 public class GradientPanel extends JPanel{
 
     @Override

@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Dimension;
 
+// Label extends JLabel to allow text to be displayed but not edited in a JPanel.
 
 public class Label extends JLabel {
 

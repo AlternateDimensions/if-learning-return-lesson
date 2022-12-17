@@ -1,3 +1,6 @@
+# Creates a Docker container that allows a web-based IDE (Gitpod) to display native applications.
+# Also installs JetBrains Mono font because I like it. Go ligatures!
+
 FROM gitpod/workspace-full-vnc
 RUN sudo apt-get update && \
     sudo apt-get install -y libgtk-3-dev font-manager
