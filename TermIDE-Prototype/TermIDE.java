@@ -103,7 +103,7 @@ public class TermIDE {
                 // Prepare results
                 System.out.println("\n*********// $ java TermIDE-Prototype/Code.java //*********\n");
                 out.close();
-                runProcess("java TermIDE-Prototype/Code.java");
+                runProcess(new String[]{"java","TermIDE-Prototype/Code.java"});
                 System.out.print("\n\033[0m*********// End Process //*********\n\nEnter {Q} to Quit\n >> ");
                 if (in.nextLine().equals("Q")) {
                     break;
@@ -127,7 +127,7 @@ public class TermIDE {
       }
 
       // compiles and runs the file, then returns the stdout and stderr
-      private static void runProcess(String command) throws Exception {
+      private static void runProcess(String[] command) throws Exception {
         Process pro = Runtime.getRuntime().exec(command);
         printLines("\033[32;1m|", pro.getInputStream());
         printLines("\033[31;1m|", pro.getErrorStream());
