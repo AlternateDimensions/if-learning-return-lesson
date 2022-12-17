@@ -58,6 +58,7 @@ public class Label extends JLabel {
         this.setMaximumSize(new Dimension(sizeDim[2], sizeDim[3]));
         
         this.setAlignmentX(0);
+        this.setVisible(true);
     }
     
 }

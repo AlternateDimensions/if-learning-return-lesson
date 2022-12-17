@@ -12,11 +12,12 @@ public class Panel extends JPanel {
         this.setPreferredSize(new Dimension(1875, 162));
     }
 
-    public Panel(int[] backgroundRGB, int[] panelBounds){
+    public Panel(int[] backgroundRGB, int[] panelBounds, boolean visible){
         this.setLayout(null);
         this.setBackground(new Color(backgroundRGB[0], backgroundRGB[1], backgroundRGB[2], backgroundRGB[3]));
         this.setBounds(panelBounds[0],panelBounds[1],panelBounds[2],panelBounds[3]);
         this.setPreferredSize(new Dimension(panelBounds[2], panelBounds[3]));
+        this.setVisible(visible);
     }
     
 }
