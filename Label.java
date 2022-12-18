@@ -23,6 +23,7 @@ public class Label extends JLabel {
         this.setVerticalTextPosition(JLabel.TOP);
         this.setForeground(new Color(123, 255, 123));
         this.setFont(new Font("JetBrains Mono", 1, 40));
+
         this.setIconTextGap(-10);
         this.setBackground(Color.DARK_GRAY);
         this.setBorder(border);
