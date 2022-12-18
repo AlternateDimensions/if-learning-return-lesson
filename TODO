@@ -1,12 +1,10 @@
 - Create the default GUI layout ✅
-- Create functionality to switch between pages
+- Create functionality to switch between pages ❓ (needs implementation but ability to is there)
 
-- Create default challenge functionality
-- Create the default lesson functionality (none lol)
-- Make button functionality
+- create page layout and functionality ❓ (like above, needs creation and implementation)
+- Make button functionality ✅
 
-- Create Main menu
-- Crate code to manage modules
+
 
 
 -JOptionPane

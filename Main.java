@@ -38,7 +38,6 @@ public class Main {
     private static boolean isLesson;
     private static int pageNumber;
     private static int maxPages;
-    private static int spacer = 2;
 
     //--- GUI Vars
     // Frame/BG
@@ -66,10 +65,10 @@ public class Main {
     private static Panel rightContentPanel;
 
     private static Panel descPanelFull;
-    private static Label descLabelFull;
+    private static TextPane descTextPaneFull;
 
     private static Panel descPanelTask;
-    private static Panel descLabelTask;
+    private static TextPane descTextPaneTask;
 
     private static Panel taskPanel;
     private static Label taskLabel1;
@@ -81,9 +80,6 @@ public class Main {
     private static PropertyChangeListener pcListener;
     
     public static void main(String[] args) throws BadLocationException, FileNotFoundException {
-        //------ TermIDE Vars ------//
-        PrintWriter out = new PrintWriter("Code.java");
-
         //------ TEST VALUES ------//
         isLesson = false;
         pageNumber = 1;
@@ -98,25 +94,29 @@ public class Main {
         // Header Panel
         headerPanel = new Panel();
         buttonLeft = new Button("<", 23, true);
-        titleLabel = new Label(false, false, "", new int[]{0,0,0}, 0, "if (learning) {return lesson;}", new int[]{255,255,255, Math.round((255/255)*255)}, new String[]{"JetBrains Mono", "1", "60"},0, new int[]{45+117,0,1550,81});
-        sectionLabel = new Label(false, false, "", new int[]{0,0,0}, 0, String.valueOf(pageNumber), new int[]{255,255,255, Math.round((255/255)*255)}, new String[]{"JetBrains Mono", "0", "35"},0,new int[]{45+117,81,1550,81});
+        titleLabel = new Label(false, false, "", new int[]{0,0,0}, 0, "if (learning) {return lesson;}", new int[]{0,0,0, Math.round((255/255)*255)}, new String[]{"JetBrains Mono", "1", "60"},0, new int[]{45+117,0,1550,81});
+        sectionLabel = new Label(false, false, "", new int[]{0,0,0}, 0, "Main Menu | 1", new int[]{0,0,0, Math.round((255/255)*255)}, new String[]{"JetBrains Mono", "0", "35"},0,new int[]{45+117,81,1550,81});
         buttonRight = new Button(">", 1735, false);
 
-        // Left COntent Panel
+        // Left oOntent Panel
         leftContentPanel = new Panel(new int[]{116, 177, 233, (int)(0.6*255)}, new int[]{23,207,926, 850}, true);
        
         codePanelWrite = new Panel(new int[]{31,31,31,255}, new int[]{23,23,881, 510}, true);
-        codeEditorPane = new TextPane(true);
+        codeEditorPane = new TextPane(0);
 
         codePanelOut = new Panel(new int[]{31,31,31,255}, new int[]{23,555, 881, 272}, true);
-        codeOutputPane = new TextPane(false);
+        codeOutputPane = new TextPane(1);
         codeExecuteButton = new Button("Compile & Run", new int[]{290,86,301,100});
 
+        // Right Content Panel
         rightContentPanel = new Panel(new int[]{116, 177, 233, (int)(0.6*255)}, new int[]{971,207,926, 850}, true);
 
         descPanelFull = new Panel(new int[]{166,193,225,255}, new int[]{23,23,881,805}, true);
+        descTextPaneFull = new TextPane(2);
 
         descPanelTask = new Panel(new int[]{166,193,225,255}, new int[]{23,23,881, 510}, false);
+        descTextPaneTask = new TextPane(3);
+
         taskPanel = new Panel(new int[]{166,193,225,255}, new int[]{23,555, 881, 272}, false);
         
         //------ CONFIG ------//
@@ -133,6 +133,7 @@ public class Main {
                         codeExecuteButton.setVisible(true);
                         codeOutputPane.setVisible(false);
                     }
+                    codeOutputPane.setText("Output [~/Code.java/]\n-----------------------\n");
                 } else if (e.getSource() == buttonRight && pageNumber < maxPages){
                     // RIGHT BUTTON
                     pageNumber++;
@@ -140,11 +141,13 @@ public class Main {
                         codeExecuteButton.setVisible(true);
                         codeOutputPane.setVisible(false);
                     }
+                    codeOutputPane.setText("Output [~/Code.java/]\n-----------------------\n");
                 } else if (e.getSource() == codeExecuteButton){
                     // COMPILE BUTTON
                     codeOutputPane.setVisible(true);
                     codeExecuteButton.setVisible(false);
                     try{
+                        PrintWriter out = new PrintWriter("Code.java");
                         out.write(codeEditorPane.getText());
                         out.close();
                         codeOutputPane.setText(codeOutputPane.getText()+runProcess(new String[]{"java","./Code.java"}));
@@ -161,7 +164,6 @@ public class Main {
                 System.out.print(e.getNewValue());
             }            
         };
-
 
         // Config buttons
         buttonLeft.addActionListener(actionListener);
@@ -198,6 +200,9 @@ public class Main {
         codePanelOut.add(codeOutputPane);
         codePanelOut.add(codeExecuteButton);
 
+        descPanelFull.add(descTextPaneFull);
+        descPanelTask.add(descTextPaneTask);
+
         // Add inner panels >> outer panels
         leftContentPanel.add(codePanelWrite);
         leftContentPanel.add(codePanelOut);
@@ -218,20 +223,25 @@ public class Main {
         appFrame.setVisible(true);
     }
 
+    //
     private static void updateSectionHeader (){
-        SwingWorker<String, Object> sw = new SwingWorker<String, Object>(){
+        SwingWorker<String[], Object> sw = new SwingWorker<String[], Object>(){
             @Override
-            protected String doInBackground() throws Exception {
+            // generate new values
+            protected String[] doInBackground() throws Exception {
                 String res = String.valueOf(pageNumber);
-                return res;
+                return new String[]{res};
             }
 
             @Override
             protected void done(){
                 try{
-                    String newMsg = String.valueOf(get());
-                    System.out.println("Section Title updated!");
+                    // Update the actual texts with new values
+                    String[] results = get();
+                    String newMsg = String.valueOf(results[0]);
                     sectionLabel.setText(newMsg);
+
+                    // refresh screen
                     appFrame.repaint();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -250,19 +260,19 @@ public class Main {
         BufferedReader in = new BufferedReader(
             new InputStreamReader(ins));
         while ((line = in.readLine()) != null) {
-            output+=(cmd + " " + line);
+            output+=(cmd + " " + line +"\n");
         }
         return output;
-      }
+    }
 
-      // compiles and runs the file, then returns the stdout and stderr
-      private static String runProcess(String[] command) throws Exception {
+    // compiles and runs the file, then returns the stdout and stderr
+    private static String runProcess(String[] command) throws Exception {
         String result= "";
         Process pro = Runtime.getRuntime().exec(command);
-        result+= printLines("OUT: |", pro.getInputStream()) + "\n";
-        result+= printLines("ERR: |", pro.getErrorStream()) + "\n";
+        result+= printLines("OUT |", pro.getInputStream());
+        result+= printLines("ERR |", pro.getErrorStream());
+        System.out.println(result);
         pro.waitFor();
-        result+=("EXIT: | exitValue() " + pro.exitValue());
         return result;
-      }
+    }
 }
