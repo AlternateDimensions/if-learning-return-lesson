@@ -10,6 +10,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+// something i got from stackoverflow 
+
 public class Example {
 
     public Example() {

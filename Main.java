@@ -1,5 +1,14 @@
 // Main manages and executes the applications.
 
+// TermIDE Imports
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.util.ArrayList;
+
+
 // IMPORTS java.awt
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -19,6 +28,9 @@ import java.util.HashMap;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.text.BadLocationException;
+
+// IMPORTS java.io
+import java.io.FileNotFoundException;
 
 // CLASS Main
 public class Main {
@@ -68,7 +80,9 @@ public class Main {
     private static ActionListener actionListener;
     private static PropertyChangeListener pcListener;
     
-    public static void main(String[] args) throws BadLocationException {
+    public static void main(String[] args) throws BadLocationException, FileNotFoundException {
+        //------ TermIDE Vars ------//
+        PrintWriter out = new PrintWriter("Code.java");
 
         //------ TEST VALUES ------//
         isLesson = false;
@@ -96,6 +110,7 @@ public class Main {
 
         codePanelOut = new Panel(new int[]{31,31,31,255}, new int[]{23,555, 881, 272}, true);
         codeOutputPane = new TextPane(false);
+        codeExecuteButton = new Button("Compile & Run", new int[]{290,86,301,100});
 
         rightContentPanel = new Panel(new int[]{116, 177, 233, (int)(0.6*255)}, new int[]{971,207,926, 850}, true);
 
@@ -110,27 +125,40 @@ public class Main {
         actionListener = new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                System.out.println("YOOOO");
                 if (e.getSource()== buttonLeft && pageNumber > 1){
                     // LEFT BUTTON
                     pageNumber --;
+                    if (!isLesson){
+                        codeExecuteButton.setVisible(true);
+                        codeOutputPane.setVisible(false);
+                    }
                 } else if (e.getSource() == buttonRight && pageNumber < maxPages){
                     // RIGHT BUTTON
                     pageNumber++;
+                    if (!isLesson){
+                        codeExecuteButton.setVisible(true);
+                        codeOutputPane.setVisible(false);
+                    }
                 } else if (e.getSource() == codeExecuteButton){
                     // COMPILE BUTTON
+                    codeOutputPane.setVisible(true);
+                    codeExecuteButton.setVisible(false);
+                    try{
+                        out.write(codeEditorPane.getText());
+                        out.close();
+                        codeOutputPane.setText(codeOutputPane.getText()+runProcess(new String[]{"java","./Code.java"}));
+                    } catch (Exception a){}
                 }
                 updateSectionHeader(); 
             }
         };
 
         // EditorPane PropertyChangeListener config
-        pcListener = new PropertyChangeListener(){
+        pcListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e){
-                String code = ((TextPane) e.getSource()).getText();
-                if (code.endsWith("\n")){
-                    codeEditorPane.setText(code);
-                }
+                System.out.print(e.getNewValue());
             }            
         };
 
@@ -138,8 +166,8 @@ public class Main {
         // Config buttons
         buttonLeft.addActionListener(actionListener);
         buttonRight.addActionListener(actionListener);
+        codeExecuteButton.addActionListener(actionListener);
         codeEditorPane.addPropertyChangeListener(pcListener);
-        
 
         // Config Labels
         sectionLabel.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -147,6 +175,8 @@ public class Main {
 
         titleLabel.setHorizontalTextPosition(SwingConstants.CENTER);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        codeOutputPane.setVisible(false);
 
         Font font = titleLabel.getFont();
         Map<TextAttribute, Object> attributes = new HashMap<>(font.getAttributes());
@@ -166,6 +196,7 @@ public class Main {
 
         codePanelWrite.add(codeEditorPane);
         codePanelOut.add(codeOutputPane);
+        codePanelOut.add(codeExecuteButton);
 
         // Add inner panels >> outer panels
         leftContentPanel.add(codePanelWrite);
@@ -187,7 +218,7 @@ public class Main {
         appFrame.setVisible(true);
     }
 
-    private static void updateSectionHeader () {
+    private static void updateSectionHeader (){
         SwingWorker<String, Object> sw = new SwingWorker<String, Object>(){
             @Override
             protected String doInBackground() throws Exception {
@@ -211,4 +242,27 @@ public class Main {
         };
         sw.execute();
     }
+
+    // Takes the command and combines it into a printed statement
+    private static String printLines(String cmd, InputStream ins) throws Exception {
+        String output = "";
+        String line = null;
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(ins));
+        while ((line = in.readLine()) != null) {
+            output+=(cmd + " " + line);
+        }
+        return output;
+      }
+
+      // compiles and runs the file, then returns the stdout and stderr
+      private static String runProcess(String[] command) throws Exception {
+        String result= "";
+        Process pro = Runtime.getRuntime().exec(command);
+        result+= printLines("OUT: |", pro.getInputStream()) + "\n";
+        result+= printLines("ERR: |", pro.getErrorStream()) + "\n";
+        pro.waitFor();
+        result+=("EXIT: | exitValue() " + pro.exitValue());
+        return result;
+      }
 }
