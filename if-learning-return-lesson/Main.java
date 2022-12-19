@@ -5,9 +5,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Scanner;
-import java.util.ArrayList;
-
 
 // IMPORTS java.awt
 import java.awt.event.ActionListener;
@@ -23,8 +20,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
+import java.util.ArrayList;
 
-// IMPORTS javax.swing
+// IMPORTS javax
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.text.BadLocationException;
@@ -33,11 +31,13 @@ import javax.swing.text.BadLocationException;
 import java.io.FileNotFoundException;
 
 // CLASS Main
-public class Main {
+public class App {
     //--- Function Vars
-    private static boolean isLesson;
     private static int pageNumber;
     private static int maxPages;
+
+    private static String[] patternsToCheck;
+    private static boolean[] containOrAvoid;
 
     //--- GUI Vars
     // Frame/BG
@@ -78,12 +78,23 @@ public class Main {
     // Listeners
     private static ActionListener actionListener;
     private static PropertyChangeListener pcListener;
+
+
+    // Other
+    private static ArrayList<Page> pages = new ArrayList<Page>();
     
     public static void main(String[] args) throws BadLocationException, FileNotFoundException {
-        //------ TEST VALUES ------//
-        isLesson = false;
+        //------ PAGE CREATION ------//
+        pages.add(new Page("Start Menu", "public class Code {\n    public static void main(String[] args) {\n        // You will be able to write code here!\n        System.out.println(\"...output goes here!\");\n    }\n}","Output [~/Code.java/]\n-----------------------\nOUT | ...output goes here!", false, "Welcome to if (learning) {return lesson;}! Here you'll learn about iterations and conditional statements in Java!", false));
+        pages.add(new Page("IF/THEN Statements","public class Code {\n    public static void main(String[] args) {\n        int x = 5;\n        if (x == 5) {\n            System.out.println(\"Hello World!\");\n        }\n    }\n}","Output [~/Code.java/]\n-----------------------\nOUT | Hello World!",false,"An IF/THEN statememnt is a conditional statement. That means that a condition must be met in order for certain code to be ran! It asks the question: \"IF...THEN...\"\nIn the code editor, a simple IF statement has been written. The code checks to see if the int x has a value of 5. If it does, it will print \"Hello World!\". Since x is equal to 5, it meets the condition and does the within the IF/THEN statement.",false));
+        pages.add(new Page("IF/THEN Statements", "public class Code {\n    public static void main(String[] args) {\n        ","Output [~/Code.java/]\n-----------------------\n",true,"Here is your first challenge: can you make a successful IF/THEN statement? Your requirements are provided below. Make sure to close your brackets!! In order to restart, simply go to the previous page and back!",true,"if(", true, "The code must have an IF/THEN statement.", "{System.out.println(\"HelloWorld!\");", true,"The code must print from within an IF/THEN statement.", "", false,  ""));
+
+
+        //------ VARS ------//
         pageNumber = 1;
-        maxPages = 20;
+        maxPages = pages.size();
+        patternsToCheck = new String[3];
+        containOrAvoid = new boolean[3];
 
         //------ CREATION ------//
 
@@ -94,8 +105,8 @@ public class Main {
         // Header Panel
         headerPanel = new Panel();
         buttonLeft = new Button("<", 23, true);
-        titleLabel = new Label(false, false, "", new int[]{0,0,0}, 0, "if (learning) {return lesson;}", new int[]{0,0,0, Math.round((255/255)*255)}, new String[]{"JetBrains Mono", "1", "60"},0, new int[]{45+117,0,1550,81});
-        sectionLabel = new Label(false, false, "", new int[]{0,0,0}, 0, "Main Menu | 1", new int[]{0,0,0, Math.round((255/255)*255)}, new String[]{"JetBrains Mono", "0", "35"},0,new int[]{45+117,81,1550,81});
+        titleLabel = new Label("if (learning) {return lesson;}", new int[]{0,0,0, Math.round((255/255)*255)}, new int[]{45+117,0,1550,81}, 1, 60);
+        sectionLabel = new Label("Main Menu | 1", new int[]{0,0,0, Math.round((255/255)*255)},new int[]{45+117,81,1550,81},0, 35);
         buttonRight = new Button(">", 1735, false);
 
         // Left oOntent Panel
@@ -118,6 +129,9 @@ public class Main {
         descTextPaneTask = new TextPane(3);
 
         taskPanel = new Panel(new int[]{166,193,225,255}, new int[]{23,555, 881, 272}, false);
+        taskLabel1 = new Label("", new int[]{0,0,0,255}, new int[]{23,23, 836, 75}, 0, 18);
+        taskLabel2 = new Label("", new int[]{0,0,0,255}, new int[]{23,98, 836, 75}, 0, 18); 
+        taskLabel3 = new Label("", new int[]{0,0,0,255}, new int[]{23,173, 836, 75}, 0, 18);
         
         //------ CONFIG ------//
 
@@ -125,35 +139,42 @@ public class Main {
         actionListener = new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                System.out.println("YOOOO");
                 if (e.getSource()== buttonLeft && pageNumber > 1){
                     // LEFT BUTTON
                     pageNumber --;
-                    if (!isLesson){
-                        codeExecuteButton.setVisible(true);
-                        codeOutputPane.setVisible(false);
-                    }
-                    codeOutputPane.setText("Output [~/Code.java/]\n-----------------------\n");
+                    // adjust page content with new page
+                    refreshFrame();
                 } else if (e.getSource() == buttonRight && pageNumber < maxPages){
                     // RIGHT BUTTON
                     pageNumber++;
-                    if (!isLesson){
-                        codeExecuteButton.setVisible(true);
-                        codeOutputPane.setVisible(false);
-                    }
-                    codeOutputPane.setText("Output [~/Code.java/]\n-----------------------\n");
+                    
+                    // adjust page content with new page
+                    refreshFrame();
                 } else if (e.getSource() == codeExecuteButton){
                     // COMPILE BUTTON
                     codeOutputPane.setVisible(true);
                     codeExecuteButton.setVisible(false);
                     try{
                         PrintWriter out = new PrintWriter("Code.java");
-                        out.write(codeEditorPane.getText());
+                        String codeText = codeEditorPane.getText();
+                        out.write(codeText);
+
+                        // Check if patterns are in / out of code
+                        // MAKE SURE TO STRIP WHITESPACES AND NEWLINES!!
+
+                        codeText = codeText.replace("public class Code {\n    public static void main(String[] args) {\n        ", "");
+                        codeText = codeText.replace(" ", "");
+                        codeText = codeText.replace("\n", "");
+
+                        System.out.println(codeText);
+
+                        
+                        
                         out.close();
                         codeOutputPane.setText(codeOutputPane.getText()+runProcess(new String[]{"java","./Code.java"}));
+                        codeEditorPane.setEditable(false);
                     } catch (Exception a){}
                 }
-                updateSectionHeader(); 
             }
         };
 
@@ -161,7 +182,7 @@ public class Main {
         pcListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e){
-                System.out.print(e.getNewValue());
+                // maybe use this for syntax highlighting?
             }            
         };
 
@@ -203,6 +224,10 @@ public class Main {
         descPanelFull.add(descTextPaneFull);
         descPanelTask.add(descTextPaneTask);
 
+        taskPanel.add(taskLabel1);
+        taskPanel.add(taskLabel2);
+        taskPanel.add(taskLabel3);
+
         // Add inner panels >> outer panels
         leftContentPanel.add(codePanelWrite);
         leftContentPanel.add(codePanelOut);
@@ -221,25 +246,76 @@ public class Main {
         
         // Finalize Frame
         appFrame.setVisible(true);
+        refreshFrame();
+        
     }
 
-    //
-    private static void updateSectionHeader (){
-        SwingWorker<String[], Object> sw = new SwingWorker<String[], Object>(){
+    // Refresh Frame
+    private static void refreshFrame (){
+        SwingWorker<ArrayList<Object>,Object> sw = new SwingWorker<ArrayList<Object>, Object>(){
             @Override
             // generate new values
-            protected String[] doInBackground() throws Exception {
-                String res = String.valueOf(pageNumber);
-                return new String[]{res};
+            protected ArrayList<Object> doInBackground() throws Exception {
+                ArrayList<Object> values = new ArrayList<Object>();
+                values.add(String.valueOf(pageNumber));
+                for (Object field : pages.get(pageNumber-1).getFields()){
+                    values.add(field);
+                }
+                return values;
             }
 
             @Override
             protected void done(){
                 try{
                     // Update the actual texts with new values
-                    String[] results = get();
-                    String newMsg = String.valueOf(results[0]);
-                    sectionLabel.setText(newMsg);
+                    ArrayList<Object> results = get();
+                    sectionLabel.setText(String.valueOf(results.get(0))+" | "+String.valueOf(results.get(1)));
+                    codeEditorPane.setText(String.valueOf(results.get(2)));
+                    codeOutputPane.setText(String.valueOf(results.get(3)));
+
+                    if ((boolean) results.get(4)){
+                        // editable is true
+                        codeEditorPane.setEditable(true);
+                        codeOutputPane.setVisible(false);
+                        codeExecuteButton.setVisible(true);
+                    } else{
+                        // editable is false
+                        codeEditorPane.setEditable(false);
+                        codeOutputPane.setVisible(true);
+                        codeExecuteButton.setVisible(false);
+                    }
+
+                    if ((boolean) results.get(6)){
+                        descPanelFull.setVisible(false);
+                        descPanelTask.setVisible(true);
+                        taskPanel.setVisible(true);
+                        taskLabel1.setVisible(true);
+                        taskLabel2.setVisible(true);
+                        taskLabel3.setVisible(true);
+
+                        descTextPaneTask.setText((String) results.get(5));
+                        patternsToCheck[0] = (String) results.get(7);
+                        containOrAvoid[0] = (boolean) results.get(8);
+                        taskLabel1.setText("X | "+(String) results.get(9));
+                        patternsToCheck[1] = (String) results.get(10);
+                        containOrAvoid[1] = (boolean) results.get(11);
+                        taskLabel2.setText("X | "+(String) results.get(12));
+                        patternsToCheck[2] = (String) results.get(13);
+                        containOrAvoid[2] = (boolean) results.get(14);
+                        taskLabel3.setText("X | "+(String) results.get(15));
+                  
+                        // has task, meaning needs to use task version
+                    } else {
+                        // full version!
+                        descPanelFull.setVisible(true);
+                        descPanelTask.setVisible(false);
+                        taskPanel.setVisible(false);
+                        taskLabel1.setVisible(false);
+                        taskLabel2.setVisible(false);
+                        taskLabel3.setVisible(false);
+
+                        descTextPaneFull.setText((String) results.get(5));
+                    }
 
                     // refresh screen
                     appFrame.repaint();
@@ -271,7 +347,6 @@ public class Main {
         Process pro = Runtime.getRuntime().exec(command);
         result+= printLines("OUT |", pro.getInputStream());
         result+= printLines("ERR |", pro.getErrorStream());
-        System.out.println(result);
         pro.waitFor();
         return result;
     }
