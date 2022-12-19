@@ -40,7 +40,7 @@ public class Main {
     private static String[] patternsToCheck;
     private static boolean[] containOrAvoid;
 
-    private static boolean passedChecks = true;
+    private static boolean passedChecks;
     private static String res;
 
     //--- GUI Vars
@@ -328,6 +328,7 @@ public class Main {
                             patternsToCheck[2] = (String) results.get(13);
                             containOrAvoid[2] = (boolean) results.get(14);
                             taskLabel3.setText("X | "+(String) results.get(15));
+                            passedChecks = true;
     
                             buttonRight.setVisible(false);
                       
@@ -373,8 +374,6 @@ public class Main {
                                 if (i == 0){taskLabel1.setText("V "+taskLabel1.getText().substring(2));}
                                 else if (i == 1){taskLabel2.setText("V "+taskLabel2.getText().substring(2));}
                                 else {taskLabel3.setText("V "+taskLabel3.getText().substring(2));}
-                            } else {
-                                System.out.println("Failed condition");
                             }
                         }
                         buttonRight.setVisible(passedChecks);
