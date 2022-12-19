@@ -176,12 +176,8 @@ public class Main {
                         codeText = codeText.replace(" ", "");
                         codeText = codeText.replace("\n", "");
 
-                        System.out.println(codeText);
-
                         // Checker
                         for (int i = 0; i <= 2; i++){
-                            System.out.println(containOrAvoid[i] && codeText.contains(patternsToCheck[i]));
-                            System.out.println(!containOrAvoid[i] && !codeText.contains(patternsToCheck[i]));
                             if (containOrAvoid[i] && codeText.contains(patternsToCheck[i])){ // if must contain TRUE and code contains pattern
                                 containOrAvoid[i] = true;
                             } else if (!containOrAvoid[i] && !codeText.contains(patternsToCheck[i])){ // if must NOT CONTAIN and code DOES NOT contain code
