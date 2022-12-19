@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
+import java.awt.Color;
 
 // IMPORTS java.beans
 import java.beans.PropertyChangeEvent;
@@ -31,13 +32,16 @@ import javax.swing.text.BadLocationException;
 import java.io.FileNotFoundException;
 
 // CLASS Main
-public class App {
+public class Main {
     //--- Function Vars
     private static int pageNumber;
     private static int maxPages;
 
     private static String[] patternsToCheck;
     private static boolean[] containOrAvoid;
+
+    private static boolean passedChecks = true;
+    private static String res;
 
     //--- GUI Vars
     // Frame/BG
@@ -87,7 +91,8 @@ public class App {
         //------ PAGE CREATION ------//
         pages.add(new Page("Start Menu", "public class Code {\n    public static void main(String[] args) {\n        // You will be able to write code here!\n        System.out.println(\"...output goes here!\");\n    }\n}","Output [~/Code.java/]\n-----------------------\nOUT | ...output goes here!", false, "Welcome to if (learning) {return lesson;}! Here you'll learn about iterations and conditional statements in Java!", false));
         pages.add(new Page("IF/THEN Statements","public class Code {\n    public static void main(String[] args) {\n        int x = 5;\n        if (x == 5) {\n            System.out.println(\"Hello World!\");\n        }\n    }\n}","Output [~/Code.java/]\n-----------------------\nOUT | Hello World!",false,"An IF/THEN statememnt is a conditional statement. That means that a condition must be met in order for certain code to be ran! It asks the question: \"IF...THEN...\"\nIn the code editor, a simple IF statement has been written. The code checks to see if the int x has a value of 5. If it does, it will print \"Hello World!\". Since x is equal to 5, it meets the condition and does the within the IF/THEN statement.",false));
-        pages.add(new Page("IF/THEN Statements", "public class Code {\n    public static void main(String[] args) {\n        ","Output [~/Code.java/]\n-----------------------\n",true,"Here is your first challenge: can you make a successful IF/THEN statement? Your requirements are provided below. Make sure to close your brackets!! In order to restart, simply go to the previous page and back!",true,"if(", true, "The code must have an IF/THEN statement.", "{System.out.println(\"HelloWorld!\");", true,"The code must print from within an IF/THEN statement.", "", false,  ""));
+        pages.add(new Page("IF/THEN Statements", "public class Code {\n    public static void main(String[] args) {\n        ","Output [~/Code.java/]\n-----------------------\n",true,"Here is your first challenge: can you make a successful IF/THEN statement? Your requirements are provided below. Make sure to close your brackets!! In order to restart, simply go to the previous page and back!",true,"if(", true, "The code must have an IF/THEN statement.", "){System.out.println(\"", true,"The code must println from within an IF/THEN statement.", "", false,  ""));
+        pages.add(new Page("Demo End", "public class Code {\n    public static void main(String[] args) {\n        // You will be able to write code here!\n        System.out.println(\"...output goes here!\");\n    }\n}","Output [~/Code.java/]\n-----------------------\nOUT | ...output goes here!", false, "This is a temporary page for the end of the project. ", false));
 
 
         //------ VARS ------//
@@ -143,13 +148,13 @@ public class App {
                     // LEFT BUTTON
                     pageNumber --;
                     // adjust page content with new page
-                    refreshFrame();
+                    refreshFrame(true);
                 } else if (e.getSource() == buttonRight && pageNumber < maxPages){
                     // RIGHT BUTTON
                     pageNumber++;
                     
                     // adjust page content with new page
-                    refreshFrame();
+                    refreshFrame(true);
                 } else if (e.getSource() == codeExecuteButton){
                     // COMPILE BUTTON
                     codeOutputPane.setVisible(true);
@@ -158,6 +163,11 @@ public class App {
                         PrintWriter out = new PrintWriter("Code.java");
                         String codeText = codeEditorPane.getText();
                         out.write(codeText);
+                        out.close();
+
+                        res = runProcess(new String[]{"java","Code.java"});
+
+                        codeOutputPane.setText(codeOutputPane.getText()+res);
 
                         // Check if patterns are in / out of code
                         // MAKE SURE TO STRIP WHITESPACES AND NEWLINES!!
@@ -168,12 +178,25 @@ public class App {
 
                         System.out.println(codeText);
 
-                        
-                        
-                        out.close();
-                        codeOutputPane.setText(codeOutputPane.getText()+runProcess(new String[]{"java","./Code.java"}));
-                        codeEditorPane.setEditable(false);
-                    } catch (Exception a){}
+                        // Checker
+                        for (int i = 0; i <= 2; i++){
+                            System.out.println(containOrAvoid[i] && codeText.contains(patternsToCheck[i]));
+                            System.out.println(!containOrAvoid[i] && !codeText.contains(patternsToCheck[i]));
+                            if (containOrAvoid[i] && codeText.contains(patternsToCheck[i])){ // if must contain TRUE and code contains pattern
+                                containOrAvoid[i] = true;
+                            } else if (!containOrAvoid[i] && !codeText.contains(patternsToCheck[i])){ // if must NOT CONTAIN and code DOES NOT contain code
+                                containOrAvoid[i] = true;
+                            } else if (patternsToCheck[i].equals("")){ // Pattern does not exist
+                                containOrAvoid[i] = true;
+                            } else { // code contains pattern but it's not supposed to OR it doesn't contain the required pattern when it does
+                                passedChecks = false;
+                                containOrAvoid[i] = false;
+                            }
+                        }
+                        refreshFrame(false);
+                    } catch (Exception a){
+                        a.printStackTrace();
+                    }
                 }
             }
         };
@@ -182,7 +205,7 @@ public class App {
         pcListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e){
-                // maybe use this for syntax highlighting?
+                codeEditorPane.setCaretColor(Color.WHITE);
             }            
         };
 
@@ -246,87 +269,127 @@ public class App {
         
         // Finalize Frame
         appFrame.setVisible(true);
-        refreshFrame();
+        refreshFrame(true);
         
     }
 
     // Refresh Frame
-    private static void refreshFrame (){
-        SwingWorker<ArrayList<Object>,Object> sw = new SwingWorker<ArrayList<Object>, Object>(){
-            @Override
-            // generate new values
-            protected ArrayList<Object> doInBackground() throws Exception {
-                ArrayList<Object> values = new ArrayList<Object>();
-                values.add(String.valueOf(pageNumber));
-                for (Object field : pages.get(pageNumber-1).getFields()){
-                    values.add(field);
+    private static void refreshFrame (boolean wholeFrame){
+        if (wholeFrame){
+            SwingWorker<ArrayList<Object>,Object> sw = new SwingWorker<ArrayList<Object>, Object>(){
+                @Override
+                // generate new values
+                protected ArrayList<Object> doInBackground() throws Exception {
+                    ArrayList<Object> values = new ArrayList<Object>();
+                    values.add(String.valueOf(pageNumber));
+                    for (Object field : pages.get(pageNumber-1).getFields()){
+                        values.add(field);
+                    }
+                    return values;
                 }
-                return values;
-            }
-
-            @Override
-            protected void done(){
-                try{
-                    // Update the actual texts with new values
-                    ArrayList<Object> results = get();
-                    sectionLabel.setText(String.valueOf(results.get(0))+" | "+String.valueOf(results.get(1)));
-                    codeEditorPane.setText(String.valueOf(results.get(2)));
-                    codeOutputPane.setText(String.valueOf(results.get(3)));
-
-                    if ((boolean) results.get(4)){
-                        // editable is true
-                        codeEditorPane.setEditable(true);
-                        codeOutputPane.setVisible(false);
-                        codeExecuteButton.setVisible(true);
-                    } else{
-                        // editable is false
+    
+                @Override
+                protected void done(){
+                    try{
+                        // Update the actual texts with new values
+                        ArrayList<Object> results = get();
+                        sectionLabel.setText(String.valueOf(results.get(0))+" | "+String.valueOf(results.get(1)));
+                        codeEditorPane.setText(String.valueOf(results.get(2)));
+                        codeOutputPane.setText(String.valueOf(results.get(3)));
+    
+                        if ((boolean) results.get(4)){
+                            // editable is true
+                            codeEditorPane.setEditable(true);
+                            codeEditorPane.setCaretColor(Color.WHITE);
+                            codeOutputPane.setVisible(false);
+                            codeExecuteButton.setVisible(true);
+                        } else{
+                            // editable is false
+                            codeEditorPane.setEditable(false);
+                            codeOutputPane.setVisible(true);
+                            codeExecuteButton.setVisible(false);
+                        }
+    
+                        if ((boolean) results.get(6)){
+                            descPanelFull.setVisible(false);
+                            descPanelTask.setVisible(true);
+                            taskPanel.setVisible(true);
+                            taskLabel1.setVisible(true);
+                            taskLabel2.setVisible(true);
+                            taskLabel3.setVisible(true);
+    
+                            descTextPaneTask.setText((String) results.get(5));
+                            patternsToCheck[0] = (String) results.get(7);
+                            containOrAvoid[0] = (boolean) results.get(8);
+                            taskLabel1.setText("X | "+(String) results.get(9));
+                            patternsToCheck[1] = (String) results.get(10);
+                            containOrAvoid[1] = (boolean) results.get(11);
+                            taskLabel2.setText("X | "+(String) results.get(12));
+                            patternsToCheck[2] = (String) results.get(13);
+                            containOrAvoid[2] = (boolean) results.get(14);
+                            taskLabel3.setText("X | "+(String) results.get(15));
+    
+                            buttonRight.setVisible(false);
+                      
+                            // has task, meaning needs to use task version
+                        } else {
+                            buttonRight.setVisible(true);
+                            // full version!
+                            descPanelFull.setVisible(true);
+                            descPanelTask.setVisible(false);
+                            taskPanel.setVisible(false);
+                            taskLabel1.setVisible(false);
+                            taskLabel2.setVisible(false);
+                            taskLabel3.setVisible(false);
+    
+                            descTextPaneFull.setText((String) results.get(5));
+                        }
+    
+                        // refresh screen
+                        appFrame.repaint();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e){
+                        e.printStackTrace();
+                    }
+                }
+            };
+            sw.execute();
+        } else {
+            SwingWorker<ArrayList<Object>,Object> sw2 = new SwingWorker<ArrayList<Object>, Object>(){
+                @Override
+                // FORCED inheritence
+                protected ArrayList<Object> doInBackground() throws Exception {
+                    ArrayList<Object> values = new ArrayList<Object>();
+                    return values;
+                }
+    
+                @Override
+                protected void done(){
+                    try{
+                        // Update the actual texts with new values
+                        for (int i = 0; i <= 2; i++){
+                            if (containOrAvoid[i]){
+                                if (i == 0){taskLabel1.setText("V "+taskLabel1.getText().substring(2));}
+                                else if (i == 1){taskLabel2.setText("V "+taskLabel2.getText().substring(2));}
+                                else {taskLabel3.setText("V "+taskLabel3.getText().substring(2));}
+                            } else {
+                                System.out.println("Failed condition");
+                            }
+                        }
+                        buttonRight.setVisible(passedChecks);
                         codeEditorPane.setEditable(false);
-                        codeOutputPane.setVisible(true);
-                        codeExecuteButton.setVisible(false);
+    
+                        // refresh screen
+                        appFrame.repaint();
+                    } catch (Exception e){
+                        e.printStackTrace();
                     }
-
-                    if ((boolean) results.get(6)){
-                        descPanelFull.setVisible(false);
-                        descPanelTask.setVisible(true);
-                        taskPanel.setVisible(true);
-                        taskLabel1.setVisible(true);
-                        taskLabel2.setVisible(true);
-                        taskLabel3.setVisible(true);
-
-                        descTextPaneTask.setText((String) results.get(5));
-                        patternsToCheck[0] = (String) results.get(7);
-                        containOrAvoid[0] = (boolean) results.get(8);
-                        taskLabel1.setText("X | "+(String) results.get(9));
-                        patternsToCheck[1] = (String) results.get(10);
-                        containOrAvoid[1] = (boolean) results.get(11);
-                        taskLabel2.setText("X | "+(String) results.get(12));
-                        patternsToCheck[2] = (String) results.get(13);
-                        containOrAvoid[2] = (boolean) results.get(14);
-                        taskLabel3.setText("X | "+(String) results.get(15));
-                  
-                        // has task, meaning needs to use task version
-                    } else {
-                        // full version!
-                        descPanelFull.setVisible(true);
-                        descPanelTask.setVisible(false);
-                        taskPanel.setVisible(false);
-                        taskLabel1.setVisible(false);
-                        taskLabel2.setVisible(false);
-                        taskLabel3.setVisible(false);
-
-                        descTextPaneFull.setText((String) results.get(5));
-                    }
-
-                    // refresh screen
-                    appFrame.repaint();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e){
-                    e.printStackTrace();
                 }
-            }
-        };
-        sw.execute();
+            };
+            sw2.execute();
+        }
+        
     }
 
     // Takes the command and combines it into a printed statement

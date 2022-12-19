@@ -38,7 +38,6 @@ public class TextPane extends JTextPane {
             this.setText("Output [~/Code.java/]\n-----------------------\n");
             this.setOpaque(false);
             this.setForeground(new Color(255,255,255,255));
-            this.setFont(new Font("JetBrains Mono", Font.PLAIN, 25));
             this.setBackground(new Color(0,0,0,0));
             
             this.setAlignmentX(0);
