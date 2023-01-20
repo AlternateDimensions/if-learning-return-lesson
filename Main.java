@@ -341,7 +341,8 @@ public class Main {
     
                             descTextPaneFull.setText((String) results.get(5));
                         }
-    
+                        buttonLeft.setVisible(Integer.parseInt(String.valueOf(results.get(0))) != 1);
+                        
                         // refresh screen
                         appFrame.repaint();
                     } catch (InterruptedException e) {
